@@ -1,113 +1,170 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import bug from "@/assets/bug.svg";
+import moduleName from "@/assets/feedback.svg";
+import question from "@/assets/question.svg";
+import close from "@/assets/close.svg";
+import comments from "@/assets/comments.svg";
 import Image from "next/image";
+import { useOnClickOutside } from "usehooks-ts";
+import { cn } from "@/app/lib/utils";
 
-export default function Home() {
+import useMeasure from "react-use-measure";
+import Content from "./Content";
+
+const Contact = () => {
+  const [showCard, setShowCard] = React.useState(false);
+  const [activeTab, setActiveTab] = React.useState<null | string>(null);
+  const [hoverWidth, setHoverWidth] = React.useState("100%");
+  React.useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setShowCard(!showCard);
+        setCurrentStep(0);
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+  const [elementRef, bounds] = useMeasure();
+  const closeCard = () => {
+    setShowCard(!showCard);
+    setCurrentStep(0);
+  };
+  const ref = React.useRef(null);
+  const handleTabClick = (link: { name: string; step: number }) => {
+    setCurrentStep(link.step);
+    setActiveTab(link.name);
+  };
+  const [currentStep, setCurrentStep] = useState(0);
+  useOnClickOutside(ref, () => {
+    setShowCard(!showCard);
+    setCurrentStep(0);
+  });
+  const links = [
+    { name: "Bug Report", icon: bug, step: 1 },
+    { name: "Question", icon: question, step: 2 },
+    // { name: "Feedback", icon: feedback, step: 3 },
+  ];
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <motion.button className="bg-white h-[100vh] w-[100vw] text-black flex items-center justify-center relative">
+      <motion.div
+        layout
+        className="flex-col drop-shadow-xl bg-white rounded-3xl border overflow-hidden gap-10"
+        animate={{ height: bounds.height }}
+        transition={{
+          duration: showCard ? 0.7 : 0.7,
+          type: "spring",
+          bounce: !showCard ? 0.4 : 0.4,
+        }}
+      >
+        <motion.div className={cn("p-5")} ref={elementRef}>
+          <motion.div
+            className="flex items-center justify-around cursor-pointer gap-4 w-full text-nowrap"
+            onClick={() => closeCard()}
           >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+            <motion.h1
+              className="text-xl w-[107px]"
+              animate={{ color: showCard ? "#39424a" : "inherit" }}
+            >
+              Get in touch
+            </motion.h1>
+            <AnimatePresence mode="popLayout">
+              {!showCard && (
+                <motion.div
+                  className="h-7 w-7"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  <Image src={comments} alt="" objectFit="contain" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <AnimatePresence mode="popLayout">
+              {showCard && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex items-center justify-center cursor-pointer"
+                  onClick={() => setShowCard(!showCard)}
+                >
+                  <div className="bg-[#fcfcfc] border border-[#edeff2] p-3 px-5 w-6 h-5 flex items-center justify-center rounded-md ">
+                    <h2 className="text-sm text-[#5e7182]">esc</h2>
+                  </div>
+                  <Image src={close} alt="" objectFit="contain" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+          <AnimatePresence initial={false}>
+            {showCard && (
+              <div>
+                <motion.div
+                  initial={{ opacity: 0, filter: "blur(4px)" }}
+                  animate={{
+                    opacity: 1,
+                    filter: "blur(0px)",
+                  }}
+                  transition={{ duration: 0.8, type: "spring", delay: 0.2 }}
+                  className="flex flex-col items-center"
+                >
+                  <div className="h-px w-full bg-[#edeff2] mt-3" />
+                  <div className="flex justify-around bg-[#F8F8FA] border border-[#edeff2] px-1 py-1 rounded-md mt-5 cursor-pointer w-[250px]">
+                    {links.map((link, index) => (
+                      <div
+                        key={index}
+                        className={cn(
+                          "flex items-center justify-between text-[#888ea5] relative ",
+                          activeTab === link.name && "text-[#161a26]"
+                        )}
+                        tabIndex={0}
+                        onClick={() => handleTabClick(link)}
+                      >
+                        {activeTab === link.name && (
+                          <motion.div
+                            layoutId="tab-indicator"
+                            className="w-full h-full bg-white absolute rounded-md drop-shadow-sm"
+                          />
+                        )}
+                        <div className="flex p-2">
+                          <motion.div
+                            whileHover={{ scale: 1.02 }}
+                            className="pr-1 z-10"
+                          >
+                            <Image
+                              src={link.icon}
+                              alt=""
+                              width={22}
+                              height={22}
+                            />
+                          </motion.div>
+                          <div className="z-10">{link.name}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <AnimatePresence mode="popLayout">
+                    <motion.div
+                      key={currentStep}
+                      initial={{ opacity: 0, filter: "blur(5px)" }}
+                      animate={{ opacity: 1, filter: "blur(0px)" }}
+                      transition={{ duration: 1, type: "spring" }}
+                    >
+                      <Content currentStep={currentStep} elementRef />
+                    </motion.div>
+                  </AnimatePresence>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </motion.div>
+    </motion.button>
   );
-}
+};
+
+export default Contact;
