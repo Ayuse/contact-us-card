@@ -1,8 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import useMeasure from "react-use-measure";
+import { useMemo } from "react";
 import imageUpload from "@/assets/image-upload.svg";
 import Image from "next/image";
 
@@ -51,7 +49,6 @@ export default Content;
 
 <div className="flex justify-between p-3">
   <h1
-    // layoutId={"card-title-Etherum"}
     className="text-xl font-medium"
   >
     Get in touch

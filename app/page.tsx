@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import bug from "@/assets/bug.svg";
-import moduleName from "@/assets/feedback.svg";
 import question from "@/assets/question.svg";
 import close from "@/assets/close.svg";
 import comments from "@/assets/comments.svg";
@@ -17,7 +16,6 @@ import Content from "./Content";
 const Contact = () => {
   const [showCard, setShowCard] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState<null | string>(null);
-  const [hoverWidth, setHoverWidth] = React.useState("100%");
   React.useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
